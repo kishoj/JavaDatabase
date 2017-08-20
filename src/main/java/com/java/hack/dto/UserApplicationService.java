@@ -25,12 +25,12 @@ public class UserApplicationService {
 	}
 	
 	public List<UserDTO> getUsers() throws Exception {
-		return userDao.getAll().stream()
+		return userDao.findAll().stream()
 				.map(this::convertToDTO).collect(Collectors.toList());
 	}
 	
 	public UserDTO getUserById(Long userId) throws Exception {
-		return convertToDTO(userDao.getById(userId));
+		return convertToDTO(userDao.findById(userId).orElse(null));
 	}
 	
 	public UserDTO createUser(UserDTO userDTO) throws Exception {

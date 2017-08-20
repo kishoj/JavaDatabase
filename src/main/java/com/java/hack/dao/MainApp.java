@@ -7,7 +7,7 @@ public class MainApp {
 	public static void main(String[] args) throws Throwable {
 		UserDAOImpl userDao = new UserDAOImpl();
 
-		userDao.getAll().forEach(user -> System.out.println(user.toString()));
+		userDao.findAll().forEach(user -> System.out.println(user.toString()));
 
 		// INSERT
 		User user = new User("Ian", "Wilson", "ian", "ian_wilson@gmail.com");
@@ -20,7 +20,7 @@ public class MainApp {
 		System.out.println(user.toString());
 
 		// FIND BY USER ID
-		System.out.println(userDao.getById(user.getId()).toString()); 
+		System.out.println(userDao.findById(user.getId()).toString()); 
 		
 		// DELETE USER
 		userDao.delete(user);

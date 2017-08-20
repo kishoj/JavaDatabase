@@ -20,7 +20,7 @@ public class MainApp {
 		}
 	}
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws Exception {
 		MySQLProfile mySQLProfile = new MySQLProfile();				
 		UserService service = getUserServiceByDatabase(Database.MYSQL, mySQLProfile);
 		databaseActionsForService(service);
@@ -32,9 +32,9 @@ public class MainApp {
 		postgreSQLProfile.disconnect();
 	}
 
-	private static void databaseActionsForService(UserService service) throws SQLException {
-		// All Users
-		service.findAll().forEach(user -> System.out.println(user.toString()));
+	private static void databaseActionsForService(UserService service) throws Exception {
+		// All Persons
+		service.findAll().forEach(person -> System.out.println(person.toString()));
 
 		// INSERT
 		Person person = service.create(new Person("Boruto", "Uzumaki", "boruto", "naruto@gmail.com"));
@@ -45,11 +45,11 @@ public class MainApp {
 		service.update(person);
 		System.out.println(person.toString());
 
-		// FIND BY USER ID
+		// FIND BY PERSON ID
 		System.out.println(service.findById(person.getId()).toString());
 		System.out.println(person.toString());
 
-		// DELETE USER
+		// DELETE PERSON
 		service.delete(person);
 	}
 
@@ -65,4 +65,5 @@ public class MainApp {
 		}
 		return userService;
 	}
+	
 }
