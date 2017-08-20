@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import com.java.hack.common.DBUtil;
+import com.java.hack.common.Database;
 import com.java.hack.common.User;
 
 public class UserDAOImpl implements UserDAO {
@@ -11,7 +12,7 @@ public class UserDAOImpl implements UserDAO {
 	Connection connection = null;
 	
 	public UserDAOImpl() {
-		connection = DBUtil.getConnection();
+		connection = DBUtil.getConnection(Database.MYSQL);
 	}
 
 	@Override

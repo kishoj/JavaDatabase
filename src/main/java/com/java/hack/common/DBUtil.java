@@ -13,12 +13,21 @@ import java.util.Optional;
 public class DBUtil {
 	
 	private static RowMapper<User> rowMapper;
+	private static RowMapper<Person> rowMapperForPerson;
 	
-	public static Connection getConnection() {
+	public static Connection getConnection(Database database) {
 		Connection conn = null;
 		try {
-			Class.forName(DBConnection.JDBC_DRIVER);
-			conn = DriverManager.getConnection(DBConnection.URL, DBConnection.USERNAME, DBConnection.PASSWORD);	
+			switch (database) {
+				case MYSQL:
+					Class.forName(MySQLDBConnection.JDBC_DRIVER);
+					conn = DriverManager.getConnection(MySQLDBConnection.URL, MySQLDBConnection.USERNAME, MySQLDBConnection.PASSWORD);	
+					break;
+				case POSTGRESQL:
+					Class.forName(PostgreSQLDBConnection.JDBC_DRIVER);
+					conn = DriverManager.getConnection(PostgreSQLDBConnection.URL, PostgreSQLDBConnection.USERNAME, PostgreSQLDBConnection.PASSWORD);	
+					break;
+			}
 			if (Optional.ofNullable(conn).isPresent()) {
 				System.out.println("Connected to Database ...");
 			}
@@ -96,6 +105,70 @@ public class DBUtil {
 			users.add(rowMapper.mapRow(rs));
 		}		
 		return users;	
+	}
+	
+	public static Optional<Person> getPersonById(Connection connection, Long userId) throws SQLException {
+		String sqlQuery = "SELECT id, firstname, lastname, login, email FROM person WHERE id = ?";
+		PreparedStatement dbStatement = connection.prepareStatement(sqlQuery);
+		dbStatement.setLong(1, userId);
+		ResultSet rs = dbStatement.executeQuery();
+		while (rs.next()) {
+			rowMapperForPerson = MapperUtil::mapResultSetToPerson;
+			return Optional.of(rowMapperForPerson.mapRow(rs));
+		}		
+		return Optional.empty();		
+	}
+
+	public static void updatePerson(Connection connection, Person person) throws SQLException {
+		String sqlQuery = "UPDATE person SET firstname = ?, lastname = ?, login = ?, email = ? WHERE id = ?";
+		PreparedStatement dbStatement = connection.prepareStatement(sqlQuery);
+		dbStatement.setString(1, person.getFirstName());
+		dbStatement.setString(2, person.getLastName());
+		dbStatement.setString(3, person.getLogin());
+		dbStatement.setString(4, person.getEmail());
+		dbStatement.setLong(5, person.getId());
+		dbStatement.executeUpdate();
+	}
+
+	public static Person insertPerson(Connection connection, Person person) throws SQLException {
+		String sqlQuery = "INSERT INTO person (firstname, lastname, login, email) VALUES (?, ?, ?, ?)";
+		PreparedStatement dbStatement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+		dbStatement.setString(1, person.getFirstName());
+		dbStatement.setString(2, person.getLastName());
+		dbStatement.setString(3, person.getLogin());
+		dbStatement.setString(4, person.getEmail());
+		dbStatement.executeUpdate();
+		ResultSet rs = dbStatement.getGeneratedKeys();
+		if (rs.next()) {
+			person.setId(rs.getLong(1));
+		}
+		return person;
+	}
+
+	public static void deletePerson(Connection connection, Person person) throws SQLException {
+		String sqlQuery = "DELETE FROM person WHERE id = ?";
+		PreparedStatement dbStatement = connection.prepareStatement(sqlQuery);
+		dbStatement.setLong(1, person.getId());
+		dbStatement.executeUpdate();
+	}
+
+	public static void deletePersonById(Connection connection, Long personId) throws SQLException {
+		String sqlQuery = "DELETE FROM person WHERE id = ?";
+		PreparedStatement dbStatement = connection.prepareStatement(sqlQuery);
+		dbStatement.setString(1, personId.toString());
+		dbStatement.executeUpdate();
+	}
+
+	public static List<Person> getAllPersons(Connection connection) throws SQLException {
+		List<Person> persons = new ArrayList<>();
+		String sqlQuery = "SELECT id, firstname, lastname, login, email FROM person";
+		PreparedStatement dbStatement = connection.prepareStatement(sqlQuery);
+		ResultSet rs = dbStatement.executeQuery();
+		while (rs.next()) {
+			rowMapperForPerson = MapperUtil::mapResultSetToPerson;
+			persons.add(rowMapperForPerson.mapRow(rs));
+		}		
+		return persons;	
 	}
 	
 }

@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.java.hack.common.DBUtil;
+import com.java.hack.common.Database;
 import com.java.hack.common.UserRowMapper;
 
 public class User implements ActiveRecord <User, Long> {
 	static Connection conn = null;
 	static
 	{
-		conn = DBUtil.getConnection();		
+		conn = DBUtil.getConnection(Database.MYSQL);		
 	};
 	
 	private Long id;
@@ -25,7 +26,7 @@ public class User implements ActiveRecord <User, Long> {
 	
 	private User() {
 		if (conn == null) {
-			conn = DBUtil.getConnection();
+			conn = DBUtil.getConnection(Database.MYSQL);
 		}
 	}
 

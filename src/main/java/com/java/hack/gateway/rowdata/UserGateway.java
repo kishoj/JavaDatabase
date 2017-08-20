@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import com.java.hack.common.DBUtil;
+import com.java.hack.common.Database;
 import com.java.hack.common.User;
 
 public class UserGateway extends User {
@@ -12,7 +13,7 @@ public class UserGateway extends User {
 	
 	public static void connect() {
 		System.out.println("Connecting to Database ...");
-		connection = DBUtil.getConnection();
+		connection = DBUtil.getConnection(Database.MYSQL);
 	}
 	
 	public static void disconnect() throws Exception {

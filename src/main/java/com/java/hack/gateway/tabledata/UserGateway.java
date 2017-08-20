@@ -3,6 +3,7 @@ package com.java.hack.gateway.tabledata;
 import java.sql.Connection;
 
 import com.java.hack.common.DBUtil;
+import com.java.hack.common.Database;
 import com.java.hack.common.User;
 
 public class UserGateway {
@@ -11,7 +12,7 @@ public class UserGateway {
 	
 	public static void connect() {
 		System.out.println("Connecting to Database ...");
-		connection = DBUtil.getConnection();
+		connection = DBUtil.getConnection(Database.MYSQL);
 	}
 	
 	public static void disconnect() throws Exception {

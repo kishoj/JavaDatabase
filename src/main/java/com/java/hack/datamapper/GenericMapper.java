@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import com.java.hack.common.DBUtil;
+import com.java.hack.common.Database;
 
 public interface GenericMapper<T> {
 	Optional<T> findById(Long id) throws SQLException;
@@ -14,6 +15,6 @@ public interface GenericMapper<T> {
 	void deleteById(Long id) throws SQLException;
 	
 	default Connection connection() {
-		return DBUtil.getConnection();
+		return DBUtil.getConnection(Database.MYSQL);
 	}
 }
